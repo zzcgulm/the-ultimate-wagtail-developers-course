@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load wagtailcore_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
@@ -20,5 +21,9 @@ Delete the line below if you're just getting started and want to remove the welc
 
     <h1>{{ page.title }}</h1>
     <p>{{ page.subtitle }}</p>
+    {% if page.body %}
+        {% comment %} Add the body here {% endcomment %}
+        {{ page.body|richtext }}
+    {% endif %}
 
 {% endblock content %}
