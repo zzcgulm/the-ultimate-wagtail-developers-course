@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
@@ -14,10 +14,10 @@ Delete the line below if you're just getting started and want to remove the welc
 
 {% block content %}
 
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-<!-- {% include 'home/welcome_page.html' %} -->
+    {% comment %}
+    Delete the line below if you're just getting started and want to remove the welcome screen!
+    {% endcomment %}
+    <!-- {% include 'home/welcome_page.html' %} -->
 
     <h1>{{ page.title }}</h1>
     <p>{{ page.subtitle }}</p>
@@ -25,5 +25,28 @@ Delete the line below if you're just getting started and want to remove the welc
         {% comment %} Add the body here {% endcomment %}
         {{ page.body|richtext }}
     {% endif %}
+
+    {% comment %}
+        Image renditions below.
+    {% endcomment %}
+    {% image page.image fill-150x150-c100 format-jpeg %}
+    {% image page.image width-400 %}
+    {% image page.image width-400 format-avif-lossless %}
+    {% image page.image width-400 format-webp-lossless %}
+    {% comment %}
+        Using an image as a template variable
+    {% endcomment %}
+    {% image page.image fill-90x200 as custom_img %}
+    <!-- {{ custom_img.url }}
+    {{ custom_img.width }}
+    {{ custom_img.height }} -->
+
+    <h2>Lesson 6: Dynamic image service view</h2>
+    {% image_url page.image "fill-150x150|jpegquality-100" %}
+    {% image_url page.image "fill-150x150|jpegquality-100" as custom_img2 %}<!-- Better practice is to add it as a variable. -->
+    {{ custom_img2 }}
+    <img src="{{ custom_img2 }}" alt="Dynamic image service view example" />
+    <img src={% image_url page.image "fill-150x150" %}  alt="Dynamic image service view example" /><!-- Not using it via a variable.-->
+
 
 {% endblock content %}
