@@ -48,5 +48,19 @@ Delete the line below if you're just getting started and want to remove the welc
     <img src="{{ custom_img2 }}" alt="Dynamic image service view example" />
     <img src={% image_url page.image "fill-150x150" %}  alt="Dynamic image service view example" /><!-- Not using it via a variable.-->
 
+    {% comment Doing this in the front-end is more code to maintain than using a method in the back-end. %} {% endcomment %}
+    {% if page.cta_url or page.cta_external_url %}
+        {% if page.cta_external_url %}
+            <p>Link to external page: <a href="{{ page.cta_external_url }}">{{ page.cta_external_url }}</a></p>
+        {% else %}
+            <p>Link to internal page: <a href="{{ page.cta_url.url }}">{{ page.cta_url.title }}</a></p>        
+        {% endif %}
+    {% endif %}
+
+    {% comment So using method in back-end: %} {% endcomment %}
+    {% if page.get_cta_url %}
+        <p>URL for <code>get_cta_url</code>: {{ page.get_cta_url }}</p>
+    {% endif %}
+
 
 {% endblock content %}
