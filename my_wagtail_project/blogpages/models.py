@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from wagtail.models import Page
 from wagtail.fields import RichTextField
@@ -53,3 +54,30 @@ class BlogDetail(Page):
         FieldPanel("body"),
         FieldPanel("image"),
     ]
+
+    def clean(self):
+        super().clean()
+
+        errors = {}
+
+        # if self.external_link and self.internal_link:
+        #     errors['external_cta'] = "Can't have both an external and internal link."
+        #     errors['internal_cta'] = "Can't have both an external and internal link."
+
+        if "blog" in self.title.lower():
+            errors["title"] = ValidationError(
+                "The title must not contain the word 'blog'."
+            )
+
+        if "blog" in self.subtitle.lower():
+            errors["subtitle"] = ValidationError(
+                "The subtitle must not contain the word 'blog'."
+            )
+
+        if "blog" in self.slug.lower():
+            errors["slug"] = ValidationError(
+                "The slug must not contain the word 'blog'."
+            )
+
+        if errors:
+            raise ValidationError(errors)
