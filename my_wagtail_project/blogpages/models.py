@@ -7,6 +7,7 @@ from taggit.models import TaggedItemBase
 
 from wagtail.admin.panels import FieldPanel
 from wagtail.blocks import TextBlock
+from wagtail import blocks
 from wagtail.fields import RichTextField
 from wagtail.fields import StreamField
 from wagtail.images import get_image_model
@@ -70,6 +71,23 @@ class BlogDetail(Page):
         [
             ("text", TextBlock()),
             ("image", ImageChooserBlock()),
+            (
+                "carousel",
+                blocks.StreamBlock(
+                    [
+                        ("image", ImageChooserBlock()),
+                        (
+                            "quotation",
+                            blocks.StructBlock(
+                                [
+                                    ("text", TextBlock()),
+                                    ("author", TextBlock()),
+                                ],
+                            ),
+                        ),
+                    ]
+                ),
+            ),
         ],
         block_counts={
             "text": {"min_num": 1, "max_num": 10},

@@ -15,6 +15,17 @@
             <p>{{ block.value }}</p>
         {% elif block.block_type == 'image' %}
             <p>{% image block.value fill-800x400 format-jpeg %}</p>
+        {% elif block.block_type == 'carousel' %}
+            {% for slide in block.value %}
+                {% if slide.block_type == 'image' %}
+                    {% image slide.value fill-800x400 %}
+                {% elif slide.block_type == 'quotation' %}
+                    {{ slide.value.text }}<br />
+                    <strong>
+                        &mdash; {{ slide.value.author }}
+                    </strong>
+                {% endif %}
+            {% endfor %}
         {% endif %}
     {% endfor %}
 
