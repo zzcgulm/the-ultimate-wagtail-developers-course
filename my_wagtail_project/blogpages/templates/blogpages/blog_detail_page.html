@@ -6,6 +6,22 @@
     <h2>{{ page.subtitle }}</h2>
     {% image page.image fill-150x150-c100 format-jpeg %}
 
-    <h3>Body is below</h3>
+    <h2>Body is below</h2>
     <div>{{ page.body|richtext }}</div>
+
+    <h2>Body using a Streamfield is below</h2>
+    {% for block in page.body_as_streamfield %}
+        {% if block.block_type == 'text' %}
+            <p>{{ block.value }}</p>
+        {% elif block.block_type == 'image' %}
+            <p>{% image block.value fill-800x400 format-jpeg %}</p>
+        {% endif %}
+    {% endfor %}
+
+    <h2>Tags</h2>
+    <ul>
+    {% for tag in page.tags.all %}
+        <li><a href="/blog/?tag={{ tag.slug }}">{{ tag.name }}</a></li>
+    {% endfor %}
+    </ul>
 {% endblock %}

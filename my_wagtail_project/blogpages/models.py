@@ -1,10 +1,17 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from wagtail.models import Page
-from wagtail.fields import RichTextField
+from modelcluster.fields import ParentalKey
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from taggit.models import TaggedItemBase
+
 from wagtail.admin.panels import FieldPanel
+from wagtail.blocks import TextBlock
+from wagtail.fields import RichTextField
+from wagtail.fields import StreamField
 from wagtail.images import get_image_model
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.models import Page
 
 
 class BlogIndex(Page):
@@ -30,6 +37,14 @@ class BlogIndex(Page):
         return context
 
 
+class BlogDetailTag(TaggedItemBase):
+    content_object = ParentalKey(
+        "blogpages.BlogDetail",
+        related_name="tagged_items",
+        on_delete=models.CASCADE,
+    )
+
+
 class BlogDetail(Page):
     # A detail page for a single blog post
 
@@ -51,9 +66,27 @@ class BlogDetail(Page):
         blank=True, features=["blockquote", "code", "image", "strikethrough"]
     )
 
+    body_as_streamfield = StreamField(
+        [
+            ("text", TextBlock()),
+            ("image", ImageChooserBlock()),
+        ],
+        block_counts={
+            "text": {"min_num": 1, "max_num": 10},
+            "image": {"min_num": 0, "max_num": 1},
+        },
+        use_json_field=True,  # Is this still correct synatx in Wagtail 6?
+        blank=True,  # For when we save the page
+        null=True,  # A field that has no info in, not prepopulated
+    )
+
+    tags = ClusterTaggableManager(through=BlogDetailTag, blank=True)
+
     content_panels = Page.content_panels + [
+        FieldPanel("tags"),
         FieldPanel("subtitle"),
         FieldPanel("body"),
+        FieldPanel("body_as_streamfield"),
         FieldPanel("image"),
     ]
 
