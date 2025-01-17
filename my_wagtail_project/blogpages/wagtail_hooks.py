@@ -11,6 +11,7 @@ from wagtail.snippets.views.snippets import (
     SnippetViewSet,
 )  # allows us to create a snippet viewset
 from taggit.models import Tag  # import class
+from blogpages.models import Author  # import class
 
 
 @register_snippet
@@ -28,4 +29,15 @@ class TagSnippetViewSet(SnippetViewSet):
     panels = [
         FieldPanel("name"),
         FieldPanel("slug"),
+    ]
+
+
+@register_snippet
+# snippet viewset is a class
+class AuthorSnippet(SnippetViewSet):
+    model = Author
+    add_to_admin_menu = False
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("bio"),
     ]

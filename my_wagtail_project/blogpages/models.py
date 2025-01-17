@@ -7,12 +7,14 @@ from taggit.models import TaggedItemBase
 
 from wagtail.admin.panels import FieldPanel
 from wagtail.blocks import TextBlock
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail import blocks
 from wagtail.fields import RichTextField
 from wagtail.fields import StreamField
 from wagtail.images import get_image_model
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.models import Page
+from wagtail.snippets.blocks import SnippetChooserBlock
 
 
 class BlogIndex(Page):
@@ -46,7 +48,15 @@ class BlogDetailTag(TaggedItemBase):
     )
 
 
-class BlogDetail(Page):
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+    bio = models.TextField()  # Could make this a rich text field
+
+    def __str__(self):
+        return self.name
+
+
+class BlogDetail(Page):  # Django model not Wagtail page
     # A detail page for a single blog post
 
     template = "blogpages/blog_detail_page.html"
@@ -69,28 +79,76 @@ class BlogDetail(Page):
 
     body_as_streamfield = StreamField(
         [
-            ("text", TextBlock()),
-            ("image", ImageChooserBlock()),
             (
-                "carousel",
-                blocks.StreamBlock(
-                    [
-                        ("image", ImageChooserBlock()),
-                        (
-                            "quotation",
-                            blocks.StructBlock(
-                                [
-                                    ("text", TextBlock()),
-                                    ("author", TextBlock()),
-                                ],
+                "info",
+                blocks.StaticBlock(
+                    admin_text="This is a content divider with extra information."
+                ),
+            ),
+            (
+                "faq",
+                blocks.ListBlock(
+                    blocks.StructBlock(
+                        [
+                            ("question", blocks.CharBlock()),
+                            (
+                                "answer",
+                                blocks.RichTextBlock(
+                                    features=["bold", "italic"],
+                                ),
                             ),
+                        ]
+                    ),
+                    min_num=1,
+                    max_num=5,
+                    label="Frequently Asked Questions",
+                ),
+            ),
+            ("image", ImageChooserBlock()),
+            ("document", DocumentChooserBlock()),
+            (
+                "page",
+                blocks.PageChooserBlock(page_type="home.homePage", required=False),
+            ),
+            ("author", SnippetChooserBlock("blogpages.Author")),
+            # ("text", TextBlock()),
+            # (
+            #     "carousel",
+            #     blocks.StreamBlock(
+            #         [
+            #             ("image", ImageChooserBlock()),
+            #             (
+            #                 "quotation",
+            #                 blocks.StructBlock(
+            #                     [
+            #                         ("text", TextBlock()),
+            #                         ("author", TextBlock()),
+            #                     ],
+            #                 ),
+            #             ),
+            #         ]
+            #     ),
+            # ),
+            (
+                "call_to_action_1",
+                blocks.StructBlock(
+                    [
+                        (
+                            "text",
+                            blocks.RichTextBlock(features=["link"]),
                         ),
-                    ]
+                        ("page", blocks.PageChooserBlock()),
+                        (
+                            "button_text",
+                            blocks.CharBlock(max_length=100, required=False),
+                        ),
+                    ],
+                    label="CTA #1",
                 ),
             ),
         ],
         block_counts={
-            "text": {"min_num": 1, "max_num": 10},
+            # "text": {"min_num": 1, "max_num": 10},
             "image": {"min_num": 0, "max_num": 1},
         },
         use_json_field=True,  # Is this still correct synatx in Wagtail 6?

@@ -11,10 +11,33 @@
 
     <h2>Body using a Streamfield is below</h2>
     {% for block in page.body_as_streamfield %}
-        {% if block.block_type == 'text' %}
+        {% if block.block_type == 'info' %}
+            <p style="color: white; background-color: black;">This is a static block.</p>
+        {% elif block.block_type == 'text' %}
             <p>{{ block.value }}</p>
         {% elif block.block_type == 'image' %}
             <p>{% image block.value fill-800x400 format-jpeg %}</p>
+        {% elif block.block_type == 'document' %}
+            <p>{{ block.value.url }}</p>
+        {% elif block.block_type == 'page' %}
+            <p>Page <code>title</code>: {{ block.value.title }}, URL: {{ block.value.url }}, Link: <a href="{{ block.value.url }}">{{ block.value.title }}</a></p>
+        {% elif block.block_type == 'author' %}
+            <dl>
+                <dt>{{ block.value.name }}</dt>
+                <dd>{{ block.value.bio }}</dd>
+            </dl>
+        {% elif block.block_type == 'call_to_action_1' %}
+            <p>call_to_action_1 struct block:</p>
+            <div>{{ block.value.text }}</div>
+            <p>
+                <a href="{{ block.value.page.url }}">
+                    {% if block.value.button_text %}
+                        {{ block.value.button_text }}
+                    {% else %}
+                        {{ block.value.page.title }}
+                    {% endif %}
+                </a>
+            </p>
         {% elif block.block_type == 'carousel' %}
             {% for slide in block.value %}
                 {% if slide.block_type == 'image' %}
@@ -26,6 +49,15 @@
                     </strong>
                 {% endif %}
             {% endfor %}
+        {% elif block.block_type == 'faq' %}
+            <ul>
+                {% for faq in block.value %}
+                    <li>
+                        <h3>{{ faq.question }}</h3>
+                        {{ faq.answer|richtext }}
+                    </li>
+                {% endfor %}
+            </ul>
         {% endif %}
     {% endfor %}
 
