@@ -16,6 +16,8 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.models import Page
 from wagtail.snippets.blocks import SnippetChooserBlock
 
+from blocks import blocks as custom_blocks
+
 
 class BlogIndex(Page):
     # A listing page of all child pages
@@ -79,72 +81,26 @@ class BlogDetail(Page):  # Django model not Wagtail page
 
     body_as_streamfield = StreamField(
         [
-            (
-                "info",
-                blocks.StaticBlock(
-                    admin_text="This is a content divider with extra information."
-                ),
-            ),
-            (
-                "faq",
-                blocks.ListBlock(
-                    blocks.StructBlock(
-                        [
-                            ("question", blocks.CharBlock()),
-                            (
-                                "answer",
-                                blocks.RichTextBlock(
-                                    features=["bold", "italic"],
-                                ),
-                            ),
-                        ]
-                    ),
-                    min_num=1,
-                    max_num=5,
-                    label="Frequently Asked Questions",
-                ),
-            ),
-            ("image", ImageChooserBlock()),
+            ("info", custom_blocks.InfoBlock()),
+            ("faq", custom_blocks.FAQListBlock()),
+            ("image", custom_blocks.ImageBlock()),
             ("document", DocumentChooserBlock()),
             (
                 "page",
                 blocks.PageChooserBlock(page_type="home.homePage", required=False),
             ),
             ("author", SnippetChooserBlock("blogpages.Author")),
-            # ("text", TextBlock()),
-            # (
-            #     "carousel",
-            #     blocks.StreamBlock(
-            #         [
-            #             ("image", ImageChooserBlock()),
-            #             (
-            #                 "quotation",
-            #                 blocks.StructBlock(
-            #                     [
-            #                         ("text", TextBlock()),
-            #                         ("author", TextBlock()),
-            #                     ],
-            #                 ),
-            #             ),
-            #         ]
-            #     ),
-            # ),
+            (
+                "text",
+                custom_blocks.TextBlock(),
+            ),
+            (
+                "carousel",
+                custom_blocks.CarouselBlock(),
+            ),
             (
                 "call_to_action_1",
-                blocks.StructBlock(
-                    [
-                        (
-                            "text",
-                            blocks.RichTextBlock(features=["link"]),
-                        ),
-                        ("page", blocks.PageChooserBlock()),
-                        (
-                            "button_text",
-                            blocks.CharBlock(max_length=100, required=False),
-                        ),
-                    ],
-                    label="CTA #1",
-                ),
+                custom_blocks.CallToAction1Block(),
             ),
         ],
         block_counts={
