@@ -1,0 +1,16 @@
+{% load wagtailcore_tags %}
+
+<!-- templates/blocks/call_to_action_1.html -->
+<p>CALL TO ACTION 1 BLOCK:</p>
+<div>
+    <div class="rich-text">
+        {{ self.text|richtext }}
+    </div>
+    <a href="{{ self.page.url }}">
+        {% if self.button_text %}
+            {{ self.button_text }}
+        {% else %}
+            {{ self.page.title }}
+        {% endif %}
+    </a>
+</div>

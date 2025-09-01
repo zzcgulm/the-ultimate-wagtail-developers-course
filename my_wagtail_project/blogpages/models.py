@@ -84,10 +84,12 @@ class BlogDetail(Page):  # Django model not Wagtail page
             ("info", custom_blocks.InfoBlock()),
             ("faq", custom_blocks.FAQListBlock()),
             ("image", custom_blocks.ImageBlock()),
-            ("document", DocumentChooserBlock()),
+            ("document", DocumentChooserBlock(group="Standalone Blocks")),
             (
                 "page",
-                blocks.PageChooserBlock(page_type="home.homePage", required=False),
+                blocks.PageChooserBlock(
+                    group="Standalone Blocks", page_type="home.homePage", required=False
+                ),
             ),
             ("author", SnippetChooserBlock("blogpages.Author")),
             (

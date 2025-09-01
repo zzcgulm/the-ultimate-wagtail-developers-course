@@ -1,0 +1,16 @@
+{% load wagtailimages_tags %}
+
+<!-- templates/blocks/carousel_block.html -->
+<p>CAROUSEL BLOCK:</p>
+{% for slide in self %}
+  {% if slide.block_type == 'image' %}
+    {% image slide.value fill-800x400 %}
+  {% elif slide.block_type == 'quotation' %}
+    <p>
+      {{ slide.value.text }}<br />
+      <strong>
+        &mdash; {{ slide.value.author }}
+      </strong>
+    </p>
+  {% endif %}
+{% endfor %}

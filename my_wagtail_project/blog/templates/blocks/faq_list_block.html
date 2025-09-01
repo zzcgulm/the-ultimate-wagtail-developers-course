@@ -1,0 +1,11 @@
+{% load wagtailcore_tags %}
+<!-- 'richtext` comes from wagtailcore_tags -->
+
+{% for faq in self %}
+<!-- templates/blocks/faq_list_block.html -->
+ <p>FAQ LIST BLOCK:</p>
+    <div class="faq-item">
+        <h4>{{ faq.question }}</h4>
+        <p>{{ faq.answer|richtext }}</p>
+    </div>
+{% endfor %}

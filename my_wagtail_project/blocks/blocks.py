@@ -16,16 +16,19 @@ class TextBlock(blocks.TextBlock):
         )
 
     class Meta:
-        # template = "..."
+        icon = "strikethrough"
+        group = "Standalone Blocks"
+        template = "blocks/text_block.html"
         ...
 
 
 class InfoBlock(blocks.StaticBlock):
     class Meta:
-        icon = "..."
-        label = "..."
         admin_text = "This is from my InfoBlock"
+        icon = "..."
+        group = "Standalone Blocks"
         label = "General information"
+        template = "blocks/info_block.html"
 
 
 class FAQBlock(blocks.StructBlock):
@@ -42,11 +45,12 @@ class FAQListBlock(blocks.ListBlock):
         super().__init__(FAQBlock(), **kwargs)
 
     class Meta:
+        group = "Iterables"
+        # icon = "..."
+        label = "Frequently Asked Questions 2"
         min_num = 1
         max_num = 5
-        label = "Frequently Asked Questions 2"
-        # icon = "..."
-        # template = "..."
+        template = "blocks/faq_list_block.html"
 
 
 class CarouselBlock(blocks.StreamBlock):
@@ -65,11 +69,12 @@ class CarouselBlock(blocks.StreamBlock):
     )
 
     class Meta:
+        group = "Iterables"
+        # icon = "image"
+        # label = "Carousel"
         # min_num = 1
         # max_num = 5
-        # label = "Carousel"
-        # icon = "image"
-        # template = "..."
+        template = "blocks/carousel_block.html"
         ...
 
 
@@ -80,10 +85,23 @@ class CallToAction1Block(blocks.StructBlock):
 
     class Meta:
         label = "CTA #1"
+        template = "blocks/call_to_action_1_block.html"
 
 
 class ImageBlock(ImageChooserBlock):
 
     class Meta:
-        # template = "...",
-        ...
+        group = "Standalone Blocks"
+        template = "blocks/image_block.html"
+
+
+class PersonBlock(blocks.StructBlock):
+    name = blocks.CharBlock(required=True)
+    biography = blocks.RichTextBlock()
+    image = ImageChooserBlock()
+
+    # ..
+    class Meta:
+        icon = "user"
+        label = "Person Profile"
+        template = "blocks/person_block.html"
