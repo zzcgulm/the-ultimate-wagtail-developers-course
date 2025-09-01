@@ -63,4 +63,11 @@ Delete the line below if you're just getting started and want to remove the welc
     {% endif %}
 
 
+    {% comment %} Custom document {% endcomment %}
+    {% if page.custom_document %}
+        THIS IS THE DOWNLOAD URL:
+        <a href="{{ page.custom_document.url }}" download>Download: {{ page.custom_document.title }}</a>
+        {{ page.custom_document.title }}, {{ page.custom_document.document_description }}
+    {% endif %}
+
 {% endblock content %}

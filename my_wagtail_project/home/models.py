@@ -1,14 +1,14 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
+from wagtail.documents import get_document_model
 from wagtail.fields import RichTextField
 from wagtail.images import get_image_model
+from wagtail.models import Page
 
 
 class HomePage(Page):
-    # pass
 
     template = "home/home_page.html"
 
@@ -22,6 +22,14 @@ class HomePage(Page):
         get_image_model(),  # 'wagtailimages.Image' can be used as a string
         null=True,
         blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    custom_document = models.ForeignKey(
+        get_document_model(),
+        blank=True,
+        null=True,
         on_delete=models.SET_NULL,
         related_name="+",
     )
@@ -42,6 +50,7 @@ class HomePage(Page):
         FieldPanel("cta_external_url"),
         FieldPanel("body"),
         FieldPanel("image"),
+        FieldPanel("custom_document"),
     ]
 
     @property

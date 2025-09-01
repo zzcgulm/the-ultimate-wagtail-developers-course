@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "home",
     "search",
     "images",
+    "documents",
     "blogpages",
     "blocks",
     "wagtail.contrib.forms",
@@ -194,3 +195,5 @@ WAGTAILDOCS_EXTENSIONS = [
 ]
 
 WAGTAILIMAGES_IMAGE_MODEL = "images.CustomImage"
+
+WAGTAILDOCS_DOCUMENT_MODEL = "documents.CustomDocument"
