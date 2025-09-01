@@ -3,3 +3,12 @@
 <!-- templates/blocks/image_block.html -->
 <p>IMAGE BLOCK:</p>
 {% image self fill-350x200 %}
+
+<p>LIST OF BLOG POSTS, RENDERED IN IMAGE BLOCK, USING CUSTOM CONTEXT FROM MODEL:</p>
+<ul>
+  {% for blog_post in blog_posts %}
+    <li>
+      <a href="{{ blog_post.url }}">{{ blog_post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
