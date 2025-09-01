@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 
 from wagtail import blocks
+from wagtail.blocks import ListBlockValidationError
 from wagtail.images.blocks import ImageChooserBlock
 
 
@@ -14,6 +16,12 @@ class TextBlock(blocks.TextBlock):
             # min_length=10, # example of config that can be used
             # required=False # example of config that can be used
         )
+
+    def clean(self, value):
+        value = super().clean(value)
+        if "wordpress" in value.lower():
+            raise ValidationError("We don't like WordPress here!")
+        return value
 
     class Meta:
         icon = "strikethrough"
@@ -31,6 +39,9 @@ class InfoBlock(blocks.StaticBlock):
         template = "blocks/info_block.html"
 
 
+from wagtail.blocks import StructBlockValidationError
+
+
 class FAQBlock(blocks.StructBlock):
     question = blocks.CharBlock()
     answer = (
@@ -39,10 +50,35 @@ class FAQBlock(blocks.StructBlock):
         ),
     )
 
+    # def clean(self, value):
+    #     cleaned_data = super().clean(value)
+    #     if "wordpress" in cleaned_data["question"].lower():
+    #         raise StructBlockValidationError(
+    #             block_errors_question={
+    #                 "question": ValidationError("We don't like WordPress here!")
+    #             }
+    #         )
+    #     return cleaned_data
+
 
 class FAQListBlock(blocks.ListBlock):
     def __init__(self, **kwargs):
         super().__init__(FAQBlock(), **kwargs)
+
+    def clean(self, value):
+        cleaned_data = super().clean(value)
+        errors = {}
+
+        for index, obj in enumerate(
+            cleaned_data
+        ):  # Loop though cleaned_data; `obj` is each FAQBlock
+            if "wordpress" in str(obj["question"]).lower():
+                errors[index] = ValidationError("We don't like WordPress here!")
+
+        if errors:
+            raise ListBlockValidationError(block_errors=errors)
+
+        return cleaned_data
 
     class Meta:
         group = "Iterables"
@@ -67,6 +103,19 @@ class CarouselBlock(blocks.StreamBlock):
             ),  # uses Wagtail TextBlock, not our custom TextBlock
         ]
     )
+
+    # Business logic to ensure admin UI creates sensible output, eg same number of images as quotations
+    def clean(self, value):
+        value = super().clean(value)
+        images = [item for item in value if item.block_type == "image"]
+        quotations = [item for item in value if item.block_type == "quotation"]
+
+        if not images or not quotations:
+            raise ValidationError("You need at least one image and one quotation.")
+
+        if len(images) != len(quotations):
+            raise ValidationError("You need the same number of images and quotations.")
+        return value
 
     class Meta:
         group = "Iterables"
