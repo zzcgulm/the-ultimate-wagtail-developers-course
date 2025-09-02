@@ -70,4 +70,11 @@ Delete the line below if you're just getting started and want to remove the welc
         {{ page.custom_document.title }}, {{ page.custom_document.document_description }}
     {% endif %}
 
+    <hr />
+    <div>
+        {% for orderable_object in page.gallery_images.all %}
+            {{ orderable_object.image }}<br />
+        {% endfor %}
+    </div>
+
 {% endblock content %}
