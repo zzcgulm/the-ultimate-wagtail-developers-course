@@ -199,3 +199,6 @@ WAGTAILIMAGES_IMAGE_MODEL = "images.CustomImage"
 WAGTAILDOCS_DOCUMENT_MODEL = "documents.CustomDocument"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "login.html"
+PASSWORD_REQUIRED_TEMPLATE = "password-required.html"
