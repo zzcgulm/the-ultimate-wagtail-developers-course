@@ -50,12 +50,48 @@ class BlogDetailTag(TaggedItemBase):
     )
 
 
-class Author(models.Model):
+# Author model for SnippetChooserBlock and ForeignKey's to the Author model.
+# Panels go in the SnippetViewSet in `wagtail_hooks.py`
+from django.contrib.contenttypes.fields import GenericRelation
+from wagtail.admin.panels import PublishingPanel
+from wagtail.models import (
+    DraftStateMixin,
+    LockableMixin,
+    PreviewableMixin,
+    RevisionMixin,
+)
+from wagtail.search import index
+
+
+class Author(
+    DraftStateMixin,
+    index.Indexed,
+    LockableMixin,
+    PreviewableMixin,
+    RevisionMixin,
+    models.Model,
+):
     name = models.CharField(max_length=100)
     bio = models.TextField()  # Could make this a rich text field
+    revisions = GenericRelation("wagtailcore.Revision", related_query_name="author")
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("bio"),
+        PublishingPanel(),
+    ]
+
+    search_fields = [
+        index.FilterField("name"),
+        index.SearchField("name"),
+        index.AutocompleteField("name"),
+    ]
 
     def __str__(self):
         return self.name
+
+    def get_preview_template(self, request, mode_name):
+        return "includes/author.html"
 
 
 class BlogDetail(Page):  # Django model not Wagtail page
@@ -115,8 +151,16 @@ class BlogDetail(Page):  # Django model not Wagtail page
     )
 
     tags = ClusterTaggableManager(through=BlogDetailTag, blank=True)
+    author = models.ForeignKey(
+        "blogpages.Author",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     content_panels = Page.content_panels + [
+        FieldPanel("author"),
         FieldPanel("tags"),
         FieldPanel("subtitle"),
         FieldPanel("body"),

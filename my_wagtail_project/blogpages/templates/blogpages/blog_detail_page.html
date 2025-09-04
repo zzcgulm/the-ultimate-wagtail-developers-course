@@ -7,6 +7,8 @@
     {{ page.title }}
   </h1>
 
+  {% include "includes/author.html" with object=self.author %}
+
   <!-- I am using `body_as_streamfield` instead of `body`! -->
   {% for block in page.body_as_streamfield %}
     {% include_block block %}
